@@ -17,5 +17,10 @@ Patcher::Patcher(const std::string &RomPath, const std::string &PatchPath, const
 
 void Patcher::Run()
 {
+	std::vector<char> RomFile, PatchFile;
+	try { RomFile = FileLoad<char>(RomPath); }
+	catch (...) { return; }
+	try { PatchFile = FileLoad<char>(PatchPath); }
+	catch (...) { return; }
 
 }

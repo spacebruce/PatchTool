@@ -1,6 +1,8 @@
 #pragma once
 #include <string>
 #include <iostream>
+#include <vector>
+#include "FileHelpers.h"
 
 class Patcher
 {
