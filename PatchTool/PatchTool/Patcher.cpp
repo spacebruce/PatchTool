@@ -23,4 +23,10 @@ void Patcher::Run()
 	try { PatchFile = FileLoad<char>(PatchPath); }
 	catch (...) { return; }
 
+	//Check for "PATCH" header
+	if (FileChunk(PatchFile, 0, PatchString.length()) != PatchString)
+	{
+		std::cout << "Bad patch file";
+		return;
+	}
 }
