@@ -19,9 +19,9 @@ void Patcher::Run()
 {
 	std::vector<char> RomFile, PatchFile;
 	try { RomFile = FileLoad<char>(RomPath); }
-	catch (...) { return; }
+	catch (const std::exception & exception) { std::cout << exception.what(); return; }
 	try { PatchFile = FileLoad<char>(PatchPath); }
-	catch (...) { return; }
+	catch (const std::exception & exception) { std::cout << exception.what(); return; }
 
 	//Check for "PATCH" header
 	if (FileChunk(PatchFile, 0, PatchString.length()) != PatchString)
@@ -29,4 +29,5 @@ void Patcher::Run()
 		std::cout << "Bad patch file";
 		return;
 	}
+	std::cout << "Good patch file";
 }
