@@ -11,4 +11,6 @@ private:
 public:
 	Patcher(char * RomPath, char * PatchPath, char * OutPath);
 	Patcher(const std::string &RomPath, const std::string &PatchPath, const std::string &OutPath);
+
+	void Run();
 };

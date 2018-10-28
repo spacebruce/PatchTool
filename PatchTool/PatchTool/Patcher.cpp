@@ -14,3 +14,8 @@ Patcher::Patcher(const std::string &RomPath, const std::string &PatchPath, const
 	this->PatchPath = PatchPath;
 	this->OutPath = OutPath;
 }
+
+void Patcher::Run()
+{
+
+}
