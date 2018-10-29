@@ -143,21 +143,21 @@ void Patcher::PatchIPS(std::vector<char> &RomFile, const std::vector<char> &Patc
 		//If RLE'd chunk
 		if (Size == 0)
 		{
-			uint32_t RLESize = 0;
+			uint32_t RLELength = 0;
 			{
 				uint8_t Byte1 = PatchFile[Position + 0];
 				uint8_t Byte2 = PatchFile[Position + 1];
-				RLESize = (Byte1 << 8) + (Byte2);
+				RLELength = (Byte1 << 8) + (Byte2);
 			}
 			uint8_t Byte = PatchFile[Position + 2];
 			//std::cout << "RLE " << Byte << " x" << RLESize << "\n";
 
-			if (Offset + RLESize > RomFile.size())
+			if (Offset + RLELength > RomFile.size())
 			{
-				RomFile.resize(Offset + RLESize, 0);
+				RomFile.resize(Offset + RLELength, 0);
 			}
 
-			for (uint32_t i = 0; i < RLESize; ++i)
+			for (uint32_t i = 0; i < RLELength; ++i)
 			{
 				RomFile[Offset + i] = Byte;
 			}
