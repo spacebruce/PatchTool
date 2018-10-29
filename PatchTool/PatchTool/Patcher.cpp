@@ -89,17 +89,16 @@ void Patcher::Run()
 		}
 	}
 
-	if (Format == PatchFormat::Invalid)
-	{
-		std::cout << "Unrecognised patch format!\n";
-		return;
-	}
-
 	//Attempt patch
 	switch (Format)
 	{
 		case PatchFormat::IPS:	PatchIPS(RomFile, PatchFile, Position);	break;
 		case PatchFormat::UPS:	PatchUPS(RomFile, PatchFile, Position);	break;
+		case PatchFormat::BPS:	PatchBPS(RomFile, PatchFile, Position);	break;
+		case PatchFormat::Invalid: default:
+			std::cout << "Unrecognised patch format!\n";
+			return;
+		break;
 	}
 
 	//Report stuff
