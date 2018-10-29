@@ -65,8 +65,8 @@ void Patcher::Run()
 	try { PatchFile = File::Load<char>(PatchPath); }
 	catch (const std::exception & exception) { std::cout << exception.what(); return; }
 
-	std::size_t RomSize = RomFile.size();
-	std::size_t PatchSize = PatchFile.size();
+	const std::size_t RomSize = RomFile.size();
+	const std::size_t PatchSize = PatchFile.size();
 
 	if (RomSize == 0)
 	{
@@ -124,10 +124,9 @@ void Patcher::PatchIPS(std::vector<char> &RomFile, const std::vector<char> &Patc
 	//Start reading...
 	while (File::Chunk(PatchFile, Position, EOFString.length()) != EOFString)
 	{
+		// Chunk header
 		uint32_t Offset = 0;
 		uint32_t Size = 0;
-
-		// Chunk header
 		{
 			uint8_t Byte1, Byte2, Byte3;
 			Byte1 = PatchFile[Position + 0];
