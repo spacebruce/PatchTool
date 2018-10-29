@@ -114,7 +114,7 @@ void Patcher::Run()
 	std::cout << "Done!\n";
 }
 
-void Patcher::PatchIPS(std::vector<char> &RomFile, const std::vector<char> &PatchFile, size_t Position)
+void Patcher::PatchIPS(std::vector<char> &RomFile, const std::vector<char> &PatchFile, std::size_t Position)
 {
 	std::cout << "Patching in IPS mode\n";
 
@@ -180,7 +180,7 @@ void Patcher::PatchIPS(std::vector<char> &RomFile, const std::vector<char> &Patc
 	}
 }
 
-void Patcher::PatchUPS(std::vector<char> &RomFile, const std::vector<char>& PatchFile, size_t Position)
+void Patcher::PatchUPS(std::vector<char> &RomFile, const std::vector<char>& PatchFile, std::size_t Position)
 {
 	std::cout << "UPS format isn't fully tested and may produce mangled files!\n";
 
@@ -192,7 +192,7 @@ void Patcher::PatchUPS(std::vector<char> &RomFile, const std::vector<char>& Patc
 		RomFile.resize(DestinationSize);
 	}
 
-	size_t RomPointer = 0;
+	std::size_t RomPointer = 0;
 
 	while (RomPointer < DestinationSize)
 	{
@@ -215,7 +215,7 @@ void Patcher::PatchUPS(std::vector<char> &RomFile, const std::vector<char>& Patc
 	//skip checksums for now
 }
 
-void Patcher::PatchBPS(std::vector<char> &RomFile, const std::vector<char>& PatchFile, size_t Position)
+void Patcher::PatchBPS(std::vector<char> &RomFile, const std::vector<char>& PatchFile, std::size_t Position)
 {
 	std::cout << "Unimplemented!\n";
 }
