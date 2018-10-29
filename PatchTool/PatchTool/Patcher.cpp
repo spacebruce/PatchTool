@@ -122,7 +122,6 @@ void Patcher::PatchIPS(std::vector<char> &RomFile, const std::vector<char> &Patc
 	const std::string EOFString = std::string("EOF");
 
 	//Start reading...
-	int loop = 0;
 	while (File::Chunk(PatchFile, Position, EOFString.length()) != EOFString)
 	{
 		uint32_t Offset = 0;
@@ -141,7 +140,6 @@ void Patcher::PatchIPS(std::vector<char> &RomFile, const std::vector<char> &Patc
 			Size = (Byte1 << 8) + (Byte2);
 			//std::cout << "Chunk o:" << Offset << " s:" << Size << "\n";
 		}
-
 		Position += 5;
 
 		//If RLE'd chunk
@@ -154,7 +152,6 @@ void Patcher::PatchIPS(std::vector<char> &RomFile, const std::vector<char> &Patc
 				RLESize = (Byte1 << 8) + (Byte2);
 			}
 			uint8_t Byte = PatchFile[Position + 2];
-
 			//std::cout << "RLE " << Byte << " x" << RLESize << "\n";
 
 			if (Offset + RLESize > RomFile.size())
@@ -162,12 +159,10 @@ void Patcher::PatchIPS(std::vector<char> &RomFile, const std::vector<char> &Patc
 				RomFile.resize(Offset + RLESize, 0);
 			}
 
-
 			for (uint32_t i = 0; i < RLESize; ++i)
 			{
 				RomFile[Offset + i] = Byte;
 			}
-
 			Position += 3;
 		}
 		else
@@ -219,11 +214,10 @@ void Patcher::PatchUPS(std::vector<char> &RomFile, const std::vector<char>& Patc
 			++RomPointer;
 		}
 	}
-
 	//skip checksums for now
 }
 
 void Patcher::PatchBPS(std::vector<char> &RomFile, const std::vector<char>& PatchFile, size_t Position)
 {
-	std::cout << "Unimplimented!\n";
+	std::cout << "Unimplemented!\n";
 }
