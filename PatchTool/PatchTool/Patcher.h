@@ -2,17 +2,43 @@
 #include <string>
 #include <iostream>
 #include <vector>
+#include <direct.h>  
+#include <array>
 #include "FileHelpers.h"
+
+enum class PatchFormat
+{
+	Invalid,
+	IPS,
+	UPS,
+	BPS,
+};
 
 class Patcher
 {
 private:
-	const std::string PatchString = std::string("PATCH");
-	const std::string EOFString = std::string("EOF");
+	std::array< std::pair< std::string, PatchFormat>, 3> FormatIdent =
+	{
+		std::make_pair("PATCH",PatchFormat::IPS),
+		std::make_pair("UPS1", PatchFormat::UPS),
+		std::make_pair("BPS1", PatchFormat::BPS),
+	};
+
 	std::string RomPath, PatchPath, OutPath;
+
+	void SetPaths(const std::string &RomPath, const std::string &PatchPath, const std::string &OutPath);
+	std::string FindPath(const std::string & Path);
+
+	// ?????
+	template <typename CharT>
+	static uintmax_t ReadVariableWidthInteger(const std::vector<CharT> &Data, std::size_t &Position);
 public:
 	Patcher(char * RomPath, char * PatchPath, char * OutPath);
 	Patcher(const std::string &RomPath, const std::string &PatchPath, const std::string &OutPath);
 
 	void Run();
+
+	void PatchIPS(std::vector<char> &RomFile, const std::vector<char> &PatchFile, size_t Position);
+	void PatchUPS(std::vector<char> &RomFile, const std::vector<char>& PatchFile, size_t Position);
+	void PatchBPS(std::vector<char> &RomFile, const std::vector<char>& PatchFile, size_t Position);
 };
