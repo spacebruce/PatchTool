@@ -3,43 +3,69 @@
 #include <string>
 #include <fstream>
 
-template< typename CharT >
-std::vector<CharT> FileLoad(const std::string & path)
+namespace File
 {
-	using ifstream = std::basic_fstream<CharT>;
-	using vector = std::vector<CharT>;
+	/*
+	bool Exists(const std::string & Path);
 
-	ifstream file = ifstream(path, std::ios::binary | std::ios::ate);
+	template <typename CharT>
+	std::vector<CharT> Load(const std::string & Path);
 
-	if (file.fail())
-		throw std::invalid_argument("Error loading file " + path);
+	template <typename CharT>
+	void Write(const std::string & Path, const std::vector<CharT> Data);
 
-	// Maybe not necessary? Maybe just return an empty vector?
-	if (file.eof())
-		throw std::length_error("Empty File " + path);
+	template< typename CharT >
+	std::string Chunk(const std::vector<CharT> &Data, const std::size_t &Start, const std::size_t &Length);	
+	*/
+	bool Exists(const std::string & Path);
 
-	auto length = file.tellg();
-	using pos_type = typename std::ifstream::pos_type;
-	file.seekg(static_cast<pos_type>(0));
+	template <typename CharT>
+	std::vector<CharT> Load(const std::string & Path)
+	{
+		std::ifstream file(Path, std::ios::binary | std::ios::ate);
 
-	using size_type = typename vector::size_type;
-	vector data = vector(static_cast<size_type>(length));
-	file.read(data.data(), length);
+		if (file.fail())
+			throw std::invalid_argument("Error loading file " + Path);
 
-	return data;
-}
+		auto length = file.tellg();
+		using pos_type = typename std::ifstream::pos_type;
+		file.seekg(static_cast<pos_type>(0));
 
-template< typename CharT >
-std::string FileChunk(const std::vector<CharT> &Data, const std::size_t &Start, const std::size_t &Length)
-{
-	if ((Start + Length) > Data.size())
-		throw std::length_error("Out of range");
+		using size_type = typename std::vector<CharT>::size_type;
+		std::vector<CharT> data = std::vector<CharT>(static_cast<size_type>(length));
+		for (size_type i = 0; i < data.size() && !file.eof(); ++i)
+			data[i] = static_cast<CharT>(file.get());
 
-	std::vector<char>::const_iterator first = Data.begin() + Start;
-	std::vector<char>::const_iterator last = Data.begin() + Start + Length;
-	std::vector<char> SubVector(first, last);
+		file.close();
+		return data;
+	}
 
-	std::string Chunk = std::string(SubVector.begin(), SubVector.end());
+	template <typename CharT>
+	void Write(const std::string & Path, const std::vector<CharT> Data)
+	{
+		std::ofstream file(Path, std::ios::out | std::ios::binary);
+		if (file.fail())
+			throw std::invalid_argument("Error opening file for writing " + Path);
 
-	return Chunk;
+		for (std::size_t i = 0; i < Data.size(); ++i)
+		{
+			file << Data[i];
+		}
+		file.close();
+	}
+
+	template< typename CharT >
+	std::string Chunk(const std::vector<CharT> &Data, const std::size_t &Start, const std::size_t &Length)
+	{
+		if ((Start + Length) > Data.size())
+			throw std::length_error("Out of range");
+
+		std::vector<char>::const_iterator first = Data.begin() + Start;
+		std::vector<char>::const_iterator last = Data.begin() + Start + Length;
+		std::vector<char> SubVector(first, last);
+
+		std::string Chunk = std::string(SubVector.begin(), SubVector.end());
+
+		return Chunk;
+	}
 }
