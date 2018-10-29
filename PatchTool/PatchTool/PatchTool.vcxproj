@@ -156,6 +156,7 @@
     <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="FileHelpers.cpp" />
     <ClCompile Include="Patcher.cpp" />
     <ClCompile Include="PatchTool.cpp" />
     <ClCompile Include="pch.cpp">
