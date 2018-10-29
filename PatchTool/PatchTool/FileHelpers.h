@@ -5,18 +5,6 @@
 
 namespace File
 {
-	/*
-	bool Exists(const std::string & Path);
-
-	template <typename CharT>
-	std::vector<CharT> Load(const std::string & Path);
-
-	template <typename CharT>
-	void Write(const std::string & Path, const std::vector<CharT> Data);
-
-	template< typename CharT >
-	std::string Chunk(const std::vector<CharT> &Data, const std::size_t &Start, const std::size_t &Length);	
-	*/
 	bool Exists(const std::string & Path);
 
 	template <typename CharT>
