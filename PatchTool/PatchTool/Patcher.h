@@ -39,6 +39,6 @@ public:
 	void Run();
 
 	void PatchIPS(std::vector<char> &RomFile, const std::vector<char> &PatchFile, std::size_t Position);
-	void PatchUPS(std::vector<char> &RomFile, const std::vector<char>& PatchFile, std::size_t Position);
-	void PatchBPS(std::vector<char> &RomFile, const std::vector<char>& PatchFile, std::size_t Position);
+	void PatchUPS(std::vector<char> &RomFile, const std::vector<char> &PatchFile, std::size_t Position);
+	void PatchBPS(std::vector<char> &RomFile, const std::vector<char> &PatchFile, std::size_t Position);
 };
