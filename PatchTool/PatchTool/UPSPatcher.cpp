@@ -21,42 +21,42 @@ static uintmax_t UPSPatcher::ReadVariableWidthInteger(const std::vector<CharT> &
 	return result;
 }
 
-UPSPatcher::UPSPatcher(std::vector<char> &RomFile, const std::vector<char>& PatchFile, std::size_t Position)
+UPSPatcher::UPSPatcher(std::vector<char> *RomFile, std::vector<char> *PatchFile)
 {
 	this->RomFile = RomFile;
 	this->PatchFile = PatchFile;
-	this->Position = Position;
 }
 
 void UPSPatcher::Run()
 {
+	std::size_t Position = 4;
 	std::cout << "UPS format isn't fully tested and may produce mangled files!\n";
 
-	std::size_t SourceSize = static_cast<std::size_t>(ReadVariableWidthInteger(PatchFile, Position));
-	std::size_t DestinationSize = static_cast<std::size_t>(ReadVariableWidthInteger(PatchFile, Position));
+	std::size_t SourceSize = static_cast<std::size_t>(ReadVariableWidthInteger(*PatchFile, Position));
+	std::size_t DestinationSize = static_cast<std::size_t>(ReadVariableWidthInteger(*PatchFile, Position));
 
 	if (SourceSize != DestinationSize)
 	{
-		RomFile.resize(DestinationSize);
+		RomFile->resize(DestinationSize);
 	}
 
 	std::size_t RomPointer = 0;
 
 	while (RomPointer < DestinationSize)
 	{
-		std::size_t Skip = static_cast<std::size_t>(ReadVariableWidthInteger(PatchFile, Position));
+		std::size_t Skip = static_cast<std::size_t>(ReadVariableWidthInteger(*PatchFile, Position));
 		RomPointer += Skip;
 
 		std::vector<char> Chunk;
 		do
 		{
-			Chunk.emplace_back(PatchFile[Position]);
+			Chunk.emplace_back(PatchFile->at(Position));
 			++Position;
-		} while (PatchFile[Position] != 0);
+		} while (PatchFile->at(Position) != 0);
 
 		for (std::size_t i = 0; i < Chunk.size(); ++i)
 		{
-			RomFile[RomPointer] = RomFile[RomPointer] ^ Chunk[i];
+			RomFile->data[RomPointer] = RomFile->at(RomPointer) ^ Chunk[i];
 			++RomPointer;
 		}
 	}
