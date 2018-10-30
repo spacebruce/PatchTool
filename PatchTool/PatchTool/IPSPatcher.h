@@ -4,7 +4,7 @@
 class IPSPatcher : public PatchBase
 {
 public:
-	IPSPatcher(std::vector<char> *RomFile, std::vector<char> *PatchFile);
+	IPSPatcher(std::vector<char> &RomFile, const std::vector<char>& PatchFile, std::size_t Position);
 	~IPSPatcher();
 
 	void Run();
