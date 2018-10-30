@@ -4,13 +4,11 @@
 class UPSPatcher : public PatchBase
 {
 private:
-
-
 	// ?????
 	template <typename CharT>
 	static uintmax_t ReadVariableWidthInteger(const std::vector<CharT> &Data, std::size_t &Position);
 public:
-	UPSPatcher();
-	~UPSPatcher();
+	UPSPatcher(std::vector<char>& RomFile, const std::vector<char>& PatchFile, std::size_t Position);
+	void Run();
 };
 
