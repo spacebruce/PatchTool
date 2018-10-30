@@ -6,6 +6,11 @@
 #include <array>
 #include "FileHelpers.h"
 
+#include "PatchBase.h"
+#include "IPSPatcher.h"
+#include "UPSPatcher.h"
+#include "BPSPatcher.h"
+
 enum class PatchFormat
 {
 	Invalid,
@@ -33,8 +38,4 @@ public:
 	Patcher(const std::string &RomPath, const std::string &PatchPath, const std::string &OutPath);
 
 	void Run();
-
-	void PatchIPS(std::vector<char> &RomFile, const std::vector<char> &PatchFile, std::size_t Position);
-	void PatchUPS(std::vector<char> &RomFile, const std::vector<char> &PatchFile, std::size_t Position);
-	void PatchBPS(std::vector<char> &RomFile, const std::vector<char> &PatchFile, std::size_t Position);
 };
