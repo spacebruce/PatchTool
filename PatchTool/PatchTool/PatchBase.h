@@ -6,7 +6,11 @@
 
 class PatchBase
 {
+protected:	//oh so THAT's what protected does. Today I learned.
+	std::string RomPath, PatchPath, OutPath;
+	std::vector<char> RomFile, PatchFile;
+	std::size_t Position;
 public:
-	PatchBase();
-	virtual ~PatchBase();
+	virtual ~PatchBase() = 0;
+	virtual void Run() = 0;
 };
