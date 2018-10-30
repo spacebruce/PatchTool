@@ -28,7 +28,7 @@ UPSPatcher::UPSPatcher(std::vector<char> &RomFile, const std::vector<char>& Patc
 	this->Position = Position;
 }
 
-void UPSPatcher::Run()
+std::vector<char> UPSPatcher::Run()
 {
 	std::cout << "UPS format isn't fully tested and may produce mangled files!\n";
 
@@ -61,4 +61,6 @@ void UPSPatcher::Run()
 		}
 	}
 	//skip checksums for now
+
+	return RomFile;
 }

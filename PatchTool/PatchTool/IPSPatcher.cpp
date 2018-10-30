@@ -12,7 +12,7 @@ IPSPatcher::~IPSPatcher()
 {
 }
 
-void IPSPatcher::Run()
+std::vector<char> IPSPatcher::Run()
 {
 	std::cout << "Patching in IPS mode\n";
 
@@ -74,6 +74,7 @@ void IPSPatcher::Run()
 			}
 			Position += Size;
 		}
-
 	}
+
+	return RomFile;
 }

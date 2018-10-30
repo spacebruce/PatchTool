@@ -12,5 +12,5 @@ protected:	//oh so THAT's what protected does. Today I learned.
 	std::size_t Position;
 public:
 	virtual ~PatchBase() = 0;
-	virtual void Run() = 0;
+	virtual std::vector<char> Run() = 0;
 };

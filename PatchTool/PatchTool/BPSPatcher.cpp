@@ -8,8 +8,8 @@ BPSPatcher::BPSPatcher(std::vector<char>& RomFile, const std::vector<char>& Patc
 	this->Position = Position;
 }
 
-void BPSPatcher::Run()
+std::vector<char> BPSPatcher::Run()
 {
-	std::size_t Position = 4;
 	std::cout << "BPS is currently unimplemented!\n";
+	return RomFile;
 }

@@ -83,7 +83,7 @@ void Patcher::Run()
 	}
 
 	//Try to patch file
-	Patcher->Run();
+	RomFile = Patcher->Run();
 
 	//Report stuff
 	if (RomFile.size() != RomSize)
