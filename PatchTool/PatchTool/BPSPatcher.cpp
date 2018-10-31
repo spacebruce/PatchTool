@@ -53,6 +53,27 @@ std::vector<char> BPSPatcher::Run()
 	const std::size_t EndPosition = PatchFile.size() - 12;
 	while (Position < EndPosition)
 	{
+		switch (Command)
+		{
+			case 0:	//Read from source file
+			{
+
+			} break;
+			case 1:
+			{
+
+			} break;
+			case 2:
+			{
+
+			} break;
+			case 3:
+			{
+
+			} break;
+		default:
+		}
+
 	}
 
 	return OutFile;
