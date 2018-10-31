@@ -30,5 +30,10 @@ BPSPatcher::BPSPatcher(std::vector<char>& RomFile, const std::vector<char>& Patc
 
 std::vector<char> BPSPatcher::Run()
 {
+	//Allocate new rom file
+	std::vector<char> OutFile = std::vector<char>(0, RomFile.size());	
 
+
+
+	return OutFile;
 }
