@@ -30,6 +30,10 @@ BPSPatcher::BPSPatcher(std::vector<char>& RomFile, const std::vector<char>& Patc
 
 std::vector<char> BPSPatcher::Run()
 {
+	std::size_t SourceSize, TargetSize, MetadataSize;
+	SourceSize = ReadVariableWidthInteger<char>(PatchFile, Position);
+	TargetSize = ReadVariableWidthInteger<char>(PatchFile, Position);
+	MetadataSize = ReadVariableWidthInteger<char>(PatchFile, Position);
 	//Allocate new rom file
 	std::vector<char> OutFile = std::vector<char>(0, RomFile.size());	
 
