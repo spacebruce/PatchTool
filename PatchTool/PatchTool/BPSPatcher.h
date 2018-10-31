@@ -1,6 +1,11 @@
 #pragma once
 #include "PatchBase.h"
 
+/*
+	BPS format spec;
+	https://www.romhacking.net/documents/746/
+*/
+
 class BPSPatcher : public PatchBase
 {
 private:

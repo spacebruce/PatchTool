@@ -48,7 +48,8 @@ std::vector<char> BPSPatcher::Run()
 	std::vector<char> OutFile = std::vector<char>(0, TargetSize);	
 
 	std::size_t OutputPointer = 0;
-	std::size_t RomPointer = 0;
+	std::size_t OutputRelative = 0;
+	std::size_t InputRelative = 0;
 
 	const std::size_t EndPosition = PatchFile.size() - 12;
 	while (Position < EndPosition)
@@ -59,26 +60,57 @@ std::vector<char> BPSPatcher::Run()
 		Length = (Data >> 2) + 1;
 		switch (Command)
 		{
-			case 0:	//Read from source file
+			case 0:	//SourceRead (Same data in both in and out files)
+			{
+				while (Length > 0)
+				{
+					--Length;
+					OutFile[OutputPointer] = RomFile[OutputPointer];
+					++OutputPointer;
+				}
+			} break;
+			case 1:	//PatchRead (Data stored in patch)
+			{
+				while (Length > 0)
+				{
+					--Length;
+					OutFile[OutputPointer] = ReadVariableWidthInteger<char>(PatchFile, Position);
+					++OutputPointer;
+				}
+			} break;
+			case 2:	//SourceCopy (Data stored *somewhere* in source file)
+			{
+				std::size_t Data = ReadVariableWidthInteger<char>(PatchFile, Position);
+				InputRelative += (Data & 1 ? -1 : +1) * (Data >> 1);
+				while (Length > 0)
+				{
+					--Length;
+					OutFile[OutputPointer] = RomFile[InputRelative];
+					++OutputPointer;
+					++InputRelative;
+				}
+			} break;
+			case 3: //TargetCopy (Data stored *somewhere* in output file)
 			{
 
+				std::size_t Data = ReadVariableWidthInteger<char>(PatchFile, Position);
+				OutputRelative += (Data & 1 ? -1 : +1) * (Data >> 1);
+				while (Length > 0)
+				{
+					--Length;
+					OutFile[OutputPointer] = OutFile[OutputRelative];
+					++OutputPointer;
+					++OutputRelative;
+				}
 			} break;
-			case 1:
+			default:
 			{
-
-			} break;
-			case 2:
-			{
-
-			} break;
-			case 3:
-			{
-
-			} break;
-		default:
+				std::cout << "!PANIC!" << std::endl;
+			}; break;
 		}
-
 	}
+
+	//Skip checksums for now
 
 	return OutFile;
 }
