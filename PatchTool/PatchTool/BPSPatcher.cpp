@@ -53,6 +53,10 @@ std::vector<char> BPSPatcher::Run()
 	const std::size_t EndPosition = PatchFile.size() - 12;
 	while (Position < EndPosition)
 	{
+		uint64_t Data, Command, Length;
+		Data = ReadVariableWidthInteger<char>(PatchFile, Position);
+		Command = Data & 3;
+		Length = (Data >> 2) + 1;
 		switch (Command)
 		{
 			case 0:	//Read from source file
