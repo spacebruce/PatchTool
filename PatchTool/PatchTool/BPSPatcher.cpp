@@ -30,6 +30,7 @@ BPSPatcher::BPSPatcher(std::vector<char>& RomFile, const std::vector<char>& Patc
 
 std::vector<char> BPSPatcher::Run()
 {
+	std::cout << "BPS mode is untested and will probably produce broken files!" << std::endl;
 	std::size_t SourceSize, TargetSize, MetadataSize;
 	SourceSize = ReadVariableWidthInteger<char>(PatchFile, Position);
 	TargetSize = ReadVariableWidthInteger<char>(PatchFile, Position);
@@ -54,10 +55,9 @@ std::vector<char> BPSPatcher::Run()
 	const std::size_t EndPosition = PatchFile.size() - 12;
 	while (Position < EndPosition)
 	{
-		uint64_t Data, Command, Length;
-		Data = ReadVariableWidthInteger<char>(PatchFile, Position);
-		Command = Data & 3;
-		Length = (Data >> 2) + 1;
+		std::uint64_t Data = ReadVariableWidthInteger<char>(PatchFile, Position);
+		std::uint64_t Command = Data & 3;
+		std::uint64_t Length = (Data >> 2) + 1;
 		switch (Command)
 		{
 			case 0:	//SourceRead (Same data in both in and out files)
@@ -92,7 +92,6 @@ std::vector<char> BPSPatcher::Run()
 			} break;
 			case 3: //TargetCopy (Data stored *somewhere* in output file)
 			{
-
 				std::size_t Data = ReadVariableWidthInteger<char>(PatchFile, Position);
 				OutputRelative += (Data & 1 ? -1 : +1) * (Data >> 1);
 				while (Length > 0)
