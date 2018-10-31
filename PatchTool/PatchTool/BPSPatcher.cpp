@@ -48,6 +48,8 @@ std::vector<char> BPSPatcher::Run()
 	std::vector<char> OutFile = std::vector<char>(0, TargetSize);	
 
 
+	std::size_t RomPointer = 0;
+
 
 	return OutFile;
 }
