@@ -30,6 +30,5 @@ BPSPatcher::BPSPatcher(std::vector<char>& RomFile, const std::vector<char>& Patc
 
 std::vector<char> BPSPatcher::Run()
 {
-	std::cout << "BPS is currently unimplemented!\n";
-	return RomFile;
+
 }
