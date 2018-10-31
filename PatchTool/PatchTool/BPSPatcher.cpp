@@ -50,6 +50,10 @@ std::vector<char> BPSPatcher::Run()
 	std::size_t OutputPointer = 0;
 	std::size_t RomPointer = 0;
 
+	const std::size_t EndPosition = PatchFile.size() - 12;
+	while (Position < EndPosition)
+	{
+	}
 
 	return OutFile;
 }
