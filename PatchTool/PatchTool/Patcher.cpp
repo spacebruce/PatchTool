@@ -35,26 +35,6 @@ std::string Patcher::FindPath(const std::string &Path)
 	}
 }
 
-// ?????
-template <typename CharT>
-static uintmax_t Patcher::ReadVariableWidthInteger(const std::vector<CharT> &Data, std::size_t &Position)
-{
-	uintmax_t result = 0, shift = 0;
-
-	for (;;) {
-		uint8_t octet = Data[Position];
-		++Position;
-		if (octet & 0x80) {
-			result += (octet & 0x7f) << shift;
-			break;
-		}
-		result += (octet | 0x80) << shift;
-		shift += 7;
-	}
-
-	return result;
-}
-
 void Patcher::Run()
 {
 	std::vector<char> RomFile, PatchFile;
@@ -78,6 +58,8 @@ void Patcher::Run()
 	std::size_t Position = 0;
 
 	//Identify patch format
+	PatchBase * Patcher;
+
 	for (std::size_t i = 0; i < FormatIdent.size(); ++i)
 	{
 		if (File::Chunk(PatchFile, 0, FormatIdent[i].first.length()) == FormatIdent[i].first)
@@ -89,17 +71,19 @@ void Patcher::Run()
 		}
 	}
 
-	//Attempt patch
 	switch (Format)
 	{
-		case PatchFormat::IPS:	PatchIPS(RomFile, PatchFile, Position);	break;
-		case PatchFormat::UPS:	PatchUPS(RomFile, PatchFile, Position);	break;
-		case PatchFormat::BPS:	PatchBPS(RomFile, PatchFile, Position);	break;
+		case PatchFormat::IPS:	Patcher = new IPSPatcher(RomFile, PatchFile, Position);	break;
+		case PatchFormat::UPS:	Patcher = new UPSPatcher(RomFile, PatchFile, Position);	break;
+		case PatchFormat::BPS:	Patcher = new BPSPatcher(RomFile, PatchFile, Position);	break;
 		case PatchFormat::Invalid: default:
 			std::cout << "Unrecognised patch format!\n";
 			return;
 		break;
 	}
+
+	//Try to patch file
+	RomFile = Patcher->Run();
 
 	//Report stuff
 	if (RomFile.size() != RomSize)
@@ -112,110 +96,4 @@ void Patcher::Run()
 	catch (const std::exception & exception) { std::cout << exception.what(); return; }
 	
 	std::cout << "Done!\n";
-}
-
-void Patcher::PatchIPS(std::vector<char> &RomFile, const std::vector<char> &PatchFile, std::size_t Position)
-{
-	std::cout << "Patching in IPS mode\n";
-
-	const std::string EOFString = std::string("EOF");
-
-	//Start reading...
-	while (File::Chunk(PatchFile, Position, EOFString.length()) != EOFString)
-	{
-		// Chunk header
-		uint32_t Offset = 0;
-		uint32_t Size = 0;
-		{
-			uint8_t Byte1, Byte2, Byte3;
-			Byte1 = PatchFile[Position + 0];
-			Byte2 = PatchFile[Position + 1];
-			Byte3 = PatchFile[Position + 2];
-			Offset = (Byte1 << 16) + (Byte2 << 8) + (Byte3);
-
-			Byte1 = PatchFile[Position + 3];
-			Byte2 = PatchFile[Position + 4];
-			Size = (Byte1 << 8) + (Byte2);
-			//std::cout << "Chunk o:" << Offset << " s:" << Size << "\n";
-		}
-		Position += 5;
-
-		//If RLE'd chunk
-		if (Size == 0)
-		{
-			uint32_t RLELength = 0;
-			{
-				uint8_t Byte1 = PatchFile[Position + 0];
-				uint8_t Byte2 = PatchFile[Position + 1];
-				RLELength = (Byte1 << 8) + (Byte2);
-			}
-			uint8_t Byte = PatchFile[Position + 2];
-			//std::cout << "RLE " << Byte << " x" << RLESize << "\n";
-
-			if (Offset + RLELength > RomFile.size())
-			{
-				RomFile.resize(Offset + RLELength, 0);
-			}
-
-			for (uint32_t i = 0; i < RLELength; ++i)
-			{
-				RomFile[Offset + i] = Byte;
-			}
-			Position += 3;
-		}
-		else
-		{
-			if (Offset + Size > RomFile.size())
-			{
-				RomFile.resize(Offset + Size, 0);
-			}
-
-			for (std::size_t i = 0; i < Size; ++i)
-			{
-				RomFile[Offset + i] = PatchFile[Position + i];
-			}
-			Position += Size;
-		}
-
-	}
-}
-
-void Patcher::PatchUPS(std::vector<char> &RomFile, const std::vector<char>& PatchFile, std::size_t Position)
-{
-	std::cout << "UPS format isn't fully tested and may produce mangled files!\n";
-
-	std::size_t SourceSize = static_cast<std::size_t>(ReadVariableWidthInteger(PatchFile, Position));
-	std::size_t DestinationSize = static_cast<std::size_t>(ReadVariableWidthInteger(PatchFile, Position));
-
-	if (SourceSize != DestinationSize)
-	{
-		RomFile.resize(DestinationSize);
-	}
-
-	std::size_t RomPointer = 0;
-
-	while (RomPointer < DestinationSize)
-	{
-		std::size_t Skip = static_cast<std::size_t>(ReadVariableWidthInteger(PatchFile, Position));
-		RomPointer += Skip;
-
-		std::vector<char> Chunk;
-		do
-		{
-			Chunk.emplace_back(PatchFile[Position]);
-			++Position;
-		} while (PatchFile[Position] != 0);
-
-		for (std::size_t i = 0; i < Chunk.size(); ++i)
-		{
-			RomFile[RomPointer] = RomFile[RomPointer] ^ Chunk[i];
-			++RomPointer;
-		}
-	}
-	//skip checksums for now
-}
-
-void Patcher::PatchBPS(std::vector<char> &RomFile, const std::vector<char>& PatchFile, std::size_t Position)
-{
-	std::cout << "Unimplemented!\n";
 }

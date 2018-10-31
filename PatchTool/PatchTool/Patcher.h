@@ -6,6 +6,11 @@
 #include <array>
 #include "FileHelpers.h"
 
+#include "PatchBase.h"
+#include "IPSPatcher.h"
+#include "UPSPatcher.h"
+#include "BPSPatcher.h"
+
 enum class PatchFormat
 {
 	Invalid,
@@ -28,17 +33,9 @@ private:
 
 	void SetPaths(const std::string &RomPath, const std::string &PatchPath, const std::string &OutPath);
 	std::string FindPath(const std::string & Path);
-
-	// ?????
-	template <typename CharT>
-	static uintmax_t ReadVariableWidthInteger(const std::vector<CharT> &Data, std::size_t &Position);
 public:
 	Patcher(char * RomPath, char * PatchPath, char * OutPath);
 	Patcher(const std::string &RomPath, const std::string &PatchPath, const std::string &OutPath);
 
 	void Run();
-
-	void PatchIPS(std::vector<char> &RomFile, const std::vector<char> &PatchFile, std::size_t Position);
-	void PatchUPS(std::vector<char> &RomFile, const std::vector<char> &PatchFile, std::size_t Position);
-	void PatchBPS(std::vector<char> &RomFile, const std::vector<char> &PatchFile, std::size_t Position);
 };

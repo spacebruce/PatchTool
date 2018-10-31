@@ -151,12 +151,19 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="BPSPatcher.h" />
     <ClInclude Include="FileHelpers.h" />
+    <ClInclude Include="IPSPatcher.h" />
+    <ClInclude Include="PatchBase.h" />
     <ClInclude Include="Patcher.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="UPSPatcher.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="BPSPatcher.cpp" />
     <ClCompile Include="FileHelpers.cpp" />
+    <ClCompile Include="IPSPatcher.cpp" />
+    <ClCompile Include="PatchBase.cpp" />
     <ClCompile Include="Patcher.cpp" />
     <ClCompile Include="PatchTool.cpp" />
     <ClCompile Include="pch.cpp">
@@ -165,6 +172,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="UPSPatcher.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
