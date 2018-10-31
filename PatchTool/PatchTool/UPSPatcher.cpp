@@ -30,7 +30,7 @@ UPSPatcher::UPSPatcher(std::vector<char> &RomFile, const std::vector<char>& Patc
 
 std::vector<char> UPSPatcher::Run()
 {
-	std::cout << "UPS format isn't fully tested and may produce mangled files!\n";
+	std::cout << "UPS mode is untested and will probably produce broken files!" << std::endl;
 
 	std::size_t SourceSize = static_cast<std::size_t>(ReadVariableWidthInteger(PatchFile, Position));
 	std::size_t DestinationSize = static_cast<std::size_t>(ReadVariableWidthInteger(PatchFile, Position));
