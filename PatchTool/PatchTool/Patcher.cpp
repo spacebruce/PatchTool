@@ -54,10 +54,10 @@ void Patcher::Run()
 		return;
 	}
 
-	PatchFormat Format = PatchFormat::Invalid;
 	std::size_t Position = 0;
 
 	//Identify patch format
+	PatchFormat Format = PatchFormat::Invalid;
 	PatchBase * Patcher;
 
 	for (std::size_t i = 0; i < FormatIdent.size(); ++i)

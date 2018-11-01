@@ -43,7 +43,7 @@ std::vector<char> BPSPatcher::Run()
 			MetaData[i] = PatchFile[Position];
 			++Position;
 		}
-		std::cout << MetaData << std::endl;
+		std::cout << MetaData << "\n";
 	}
 
 	//Allocate new rom file
@@ -113,7 +113,7 @@ std::vector<char> BPSPatcher::Run()
 			} break;
 			default:
 			{
-				std::cout << "!PANIC!" << std::endl;
+				std::cout << "!PANIC!" << "\n";
 			}; break;
 		}
 	}
