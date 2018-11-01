@@ -46,7 +46,8 @@ std::vector<char> BPSPatcher::Run()
 	std::cout << MetaData << std::endl;
 
 	//Allocate new rom file
-	std::vector<char> OutFile = std::vector<char>(0, TargetSize);	
+	std::vector<char> OutFile;
+	OutFile.resize(TargetSize, 0);
 
 	std::size_t OutputPointer = 0;
 	std::size_t OutputRelative = 0;
