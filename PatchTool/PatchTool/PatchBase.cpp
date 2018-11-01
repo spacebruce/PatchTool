@@ -1,6 +1,2 @@
 #include "pch.h"
-#include "PatchBase.h"
-
-PatchBase::~PatchBase()
-{
-}
+#include "PatchBase.h"=
