@@ -94,6 +94,8 @@ void Patcher::Run()
 	//Write rom file out
 	try {	File::Write<char>(OutPath, RomFile);	}
 	catch (const std::exception & exception) { std::cout << exception.what(); return; }
+
+	delete Patcher;
 	
 	std::cout << "Done!\n";
 }
