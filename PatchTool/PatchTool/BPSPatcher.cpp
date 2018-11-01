@@ -30,7 +30,6 @@ BPSPatcher::BPSPatcher(std::vector<char>& RomFile, const std::vector<char>& Patc
 
 std::vector<char> BPSPatcher::Run()
 {
-	std::cout << "BPS mode is untested and will probably produce broken files!" << std::endl;
 	std::size_t SourceSize = static_cast<std::size_t>(ReadVariableWidthInteger(PatchFile, Position));
 	std::size_t TargetSize = static_cast<std::size_t>(ReadVariableWidthInteger(PatchFile, Position));
 	std::size_t MetadataSize = static_cast<std::size_t>(ReadVariableWidthInteger(PatchFile, Position));
