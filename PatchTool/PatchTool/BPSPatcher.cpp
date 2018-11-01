@@ -4,9 +4,9 @@
 
 // ?????
 template <typename CharT>
-static uintmax_t BPSPatcher::ReadVariableWidthInteger(const std::vector<CharT> &Data, std::size_t &Position)
+static std::uint64_t BPSPatcher::ReadVariableWidthInteger(const std::vector<CharT> &Data, std::size_t &Position)
 {
-	uintmax_t result = 0, shift = 0;
+	std::uint64_t result = 0, shift = 0;
 	for (;;) {
 		uint8_t octet = Data[Position];
 		++Position;
@@ -30,23 +30,25 @@ BPSPatcher::BPSPatcher(std::vector<char>& RomFile, const std::vector<char>& Patc
 
 std::vector<char> BPSPatcher::Run()
 {
-	std::cout << "BPS mode is untested and will probably produce broken files!" << std::endl;
-	std::size_t SourceSize, TargetSize, MetadataSize;
-	SourceSize = ReadVariableWidthInteger<char>(PatchFile, Position);
-	TargetSize = ReadVariableWidthInteger<char>(PatchFile, Position);
-	MetadataSize = ReadVariableWidthInteger<char>(PatchFile, Position);
+	std::size_t SourceSize = static_cast<std::size_t>(ReadVariableWidthInteger(PatchFile, Position));
+	std::size_t TargetSize = static_cast<std::size_t>(ReadVariableWidthInteger(PatchFile, Position));
+	std::size_t MetadataSize = static_cast<std::size_t>(ReadVariableWidthInteger(PatchFile, Position));
 
-	std::string MetaData;
-	MetaData.reserve(MetadataSize);
-	for (size_t i = 0; i < MetadataSize; ++i)
+	if (MetadataSize > 0)
 	{
-		MetaData[i] = PatchFile[Position];
-		++Position;
+		std::string MetaData;
+		MetaData.reserve(MetadataSize);
+		for (size_t i = 0; i < MetadataSize; ++i)
+		{
+			MetaData[i] = PatchFile[Position];
+			++Position;
+		}
+		std::cout << MetaData << std::endl;
 	}
-	std::cout << MetaData << std::endl;
 
 	//Allocate new rom file
-	std::vector<char> OutFile = std::vector<char>(0, TargetSize);	
+	std::vector<char> OutFile;
+	OutFile.resize(TargetSize, 0);
 
 	std::size_t OutputPointer = 0;
 	std::size_t OutputRelative = 0;
@@ -55,9 +57,11 @@ std::vector<char> BPSPatcher::Run()
 	const std::size_t EndPosition = PatchFile.size() - 12;
 	while (Position < EndPosition)
 	{
-		std::uint64_t Data = ReadVariableWidthInteger<char>(PatchFile, Position);
+		std::uint64_t Data = static_cast<std::uint64_t>(ReadVariableWidthInteger<char>(PatchFile, Position));
 		std::uint64_t Command = Data & 3;
 		std::uint64_t Length = (Data >> 2) + 1;
+		//std::cout << "Patch : " << Position << "  Output : " << OutputPointer << "\n";
+		//std::cout << Data << " " << " C : " << Command << " L : " << Length << "\n";
 		switch (Command)
 		{
 			case 0:	//SourceRead (Same data in both in and out files)
@@ -65,7 +69,8 @@ std::vector<char> BPSPatcher::Run()
 				while (Length > 0)
 				{
 					--Length;
-					OutFile[OutputPointer] = RomFile[OutputPointer];
+					char Byte = RomFile[OutputPointer];
+					OutFile[OutputPointer] = Byte;
 					++OutputPointer;
 				}
 			} break;
@@ -74,30 +79,34 @@ std::vector<char> BPSPatcher::Run()
 				while (Length > 0)
 				{
 					--Length;
-					OutFile[OutputPointer] = ReadVariableWidthInteger<char>(PatchFile, Position);
+					char Byte = PatchFile[Position];
+					++Position;
+					OutFile[OutputPointer] = Byte;
 					++OutputPointer;
 				}
 			} break;
 			case 2:	//SourceCopy (Data stored *somewhere* in source file)
 			{
-				std::size_t Data = ReadVariableWidthInteger<char>(PatchFile, Position);
+				std::uint64_t Data = ReadVariableWidthInteger(PatchFile, Position);
 				InputRelative += (Data & 1 ? -1 : +1) * (Data >> 1);
 				while (Length > 0)
 				{
 					--Length;
-					OutFile[OutputPointer] = RomFile[InputRelative];
+					char Byte = RomFile[InputRelative];
+					OutFile[OutputPointer] = Byte;
 					++OutputPointer;
 					++InputRelative;
 				}
 			} break;
 			case 3: //TargetCopy (Data stored *somewhere* in output file)
 			{
-				std::size_t Data = ReadVariableWidthInteger<char>(PatchFile, Position);
+				std::uint64_t Data = ReadVariableWidthInteger(PatchFile, Position);
 				OutputRelative += (Data & 1 ? -1 : +1) * (Data >> 1);
 				while (Length > 0)
 				{
 					--Length;
-					OutFile[OutputPointer] = OutFile[OutputRelative];
+					char Byte = OutFile[OutputRelative];
+					OutFile[OutputPointer] = Byte;
 					++OutputPointer;
 					++OutputRelative;
 				}

@@ -1,7 +1,7 @@
 # PatchTool
-simple IPS and UPS file patcher
+Simple IPS and BPS file patcher for Windows. Has untested and most likely broken UPS file support.
 
-intended for my personal use, probably breaks files.
+Intended for my personal use, has a good chance of producing mangled files.
 
 Usage;
 >PatchTool.exe rompath patchpath output
