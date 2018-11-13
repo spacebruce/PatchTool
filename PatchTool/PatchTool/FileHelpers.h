@@ -10,7 +10,7 @@ namespace File
 	template <typename CharT>
 	std::vector<CharT> Load(const std::string & Path)
 	{
-		std::ifstream file(Path, std::ios::binary | std::ios::ate);
+		std::ifstream file = std::ifstream(Path, std::ios::binary | std::ios::ate);
 
 		if (file.fail())
 			throw std::invalid_argument("Error loading file " + Path);
@@ -31,7 +31,7 @@ namespace File
 	template <typename CharT>
 	void Write(const std::string & Path, const std::vector<CharT> Data)
 	{
-		std::ofstream file(Path, std::ios::out | std::ios::binary);
+		std::ofstream file = std::ofstream(Path, std::ios::out | std::ios::binary);
 		if (file.fail())
 			throw std::invalid_argument("Error opening file for writing " + Path);
 

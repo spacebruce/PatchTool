@@ -4,6 +4,6 @@
 
 bool File::Exists(const std::string &Path)
 {
-	std::ifstream file(Path);
+	std::ifstream file = std::ifstream(Path);
 	return !(file.fail());
 }
